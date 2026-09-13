@@ -1,0 +1,44 @@
+<div class="login-page">
+      <div class="login-card">
+
+        <div class="logo">
+          <img src="assets/logo.png" alt="Logo">
+        </div>
+
+        <h1>AI Instagram Auto Poster</h1>
+        <p>Sign in to continue</p>
+
+        <form (ngSubmit)="login()">
+
+          <label>Email</label>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          >
+
+          <label>Password</label>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          >
+
+          <button type="submit" [disabled]="loading">
+            {{ loading ? 'Signing in...' : 'Sign In' }}
+          </button>
+
+          @if (error) {
+            <div class="error">
+              {{ error }}
+            </div>
+          }
+
+        </form>
+
+      </div>
+    </div>

@@ -6,8 +6,22 @@ function getAdminApp() {
   if (getApps().length) return getApps()[0];
 
   const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-  if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !privateKey) {
-    throw new Error('Missing Firebase Admin environment variables.');
+  const missing = [];
+
+  if (!process.env.FIREBASE_PROJECT_ID) {
+    missing.push('FIREBASE_PROJECT_ID');
+  }
+
+  if (!process.env.FIREBASE_CLIENT_EMAIL) {
+    missing.push('FIREBASE_CLIENT_EMAIL');
+  }
+
+  if (!privateKey) {
+    missing.push('FIREBASE_PRIVATE_KEY');
+  }
+
+  if (missing.length > 0) {
+    throw new Error(`Missing Firebase Admin environment variables: ${missing.join(', ')}`);
   }
 
   return initializeApp({
@@ -22,4 +36,4 @@ function getAdminApp() {
 
 export const adminApp = getAdminApp();
 export const db = getFirestore(adminApp);
-export const bucket = getStorage(adminApp).bucket();
+export const storage = getStorage(adminApp);

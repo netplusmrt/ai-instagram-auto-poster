@@ -1,61 +1,100 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { FieldValue } from 'firebase-admin/firestore';
-import { db, bucket } from './lib/firebase-admin';
+import { db, storage } from './lib/firebase-admin';
 import { openai } from './lib/openai';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   try {
-    const postId = String(req.body?.postId ?? '');
-    if (!postId) return res.status(400).json({ error: 'postId is required.' });
+    const postId = String(req.body?.postId ?? '').trim();
 
-    const ref = db.collection('social_posts').doc(postId);
-    const snap = await ref.get();
-    if (!snap.exists) return res.status(404).json({ error: 'Post not found.' });
+    if (!postId) {
+      return res.status(400).json({ error: 'postId is required.' });
+    }
 
-    const data = snap.data()!;
-    await ref.update({ status: 'generating', updatedAt: FieldValue.serverTimestamp() });
+    // Get post from Firestore
+    const postRef = db.collection('social_posts').doc(postId);
+    const postSnap = await postRef.get();
 
+    if (!postSnap.exists) {
+      return res.status(404).json({ error: 'Post not found.' });
+    }
+
+    const post = postSnap.data();
+
+    if (!post?.imagePrompt) {
+      return res.status(400).json({
+        error: 'This post does not have an image prompt.'
+      });
+    }
+
+    // Generate image with OpenAI
     const result = await openai.images.generate({
       model: process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini',
-      prompt: `${data.imagePrompt}\nBrand: AccountancyApp. Use the uploaded brand logo only if available to the image workflow; otherwise leave a clean corner for logo placement.`,
-      size: '1024x1024',
-      quality: 'medium'
+      prompt: post.imagePrompt,
+      size: '1024x1024'
     });
 
-    const base64 = result.data?.[0]?.b64_json;
-    if (!base64) throw new Error('Image generation returned no image data.');
+    const imageBase64 = result.data?.[0]?.b64_json;
 
-    const buffer = Buffer.from(base64, 'base64');
-    const filePath = `instagram/${postId}.png`;
+    if (!imageBase64) {
+      throw new Error('OpenAI did not return an image.');
+    }
+
+    // Convert Base64 → Buffer
+    const imageBuffer = Buffer.from(imageBase64, 'base64');
+
+    // Firebase Storage path
+    const filePath = `social-posts/${postId}.png`;
+
+    const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
+
+    if (!bucketName) {
+      throw new Error('FIREBASE_STORAGE_BUCKET is missing at runtime.');
+    }
+
+    const bucket = storage.bucket(bucketName);
+
     const file = bucket.file(filePath);
 
-    await file.save(buffer, {
-      metadata: { contentType: 'image/png', cacheControl: 'public,max-age=31536000' },
-      resumable: false
-    });
-
-    const downloadToken = crypto.randomUUID();
-    await file.setMetadata({
+    // Upload image
+    await file.save(imageBuffer, {
       metadata: {
-        firebaseStorageDownloadTokens: downloadToken
+        contentType: 'image/png',
+        metadata: {
+          postId,
+          generatedBy: 'openai'
+        }
       }
     });
 
-    const encodedPath = encodeURIComponent(filePath);
-    const imageUrl =
-      `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodedPath}?alt=media&token=${downloadToken}`;
+    // Make the file publicly accessible
+    await file.makePublic();
 
-    await ref.update({
+    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+
+    // Update Firestore
+    await postRef.update({
       imageUrl,
       status: 'ready',
       updatedAt: FieldValue.serverTimestamp()
     });
 
-    return res.status(200).json({ imageUrl });
+    return res.status(200).json({
+      imageUrl
+    });
+
   } catch (error: any) {
-    console.error(error);
-    return res.status(500).json({ error: error?.message ?? 'Image generation failed.' });
+    console.error('Image generation error:', error);
+
+    return res.status(500).json({
+      error: error?.message ?? 'Image generation failed.'
+    });
   }
 }

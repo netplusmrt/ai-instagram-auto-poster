@@ -35,7 +35,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const completion = await openai.chat.completions.create({
       model: process.env.OPENAI_TEXT_MODEL || 'gpt-5-mini',
-      temperature: 0.7,
       response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
