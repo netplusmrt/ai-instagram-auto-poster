@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Starter rules for a private single-admin prototype.
+    // Before production, enable Firebase Authentication and replace this
+    // with user/role based access rules.
+    match /social_posts/{postId} {
+      allow read, write: if true;
+    }
+    match /content_topics/{topicId} {
+      allow read, write: if true;
+    }
+    match /automation_settings/{docId} {
+      allow read, write: if true;
+    }
+    match /social_accounts/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,0 +1,165 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="Brand logo">
+      <div>
+        <strong>AI Social</strong>
+        <span>Instagram Manager</span>
+      </div>
+    </div>
+
+    <nav>
+      <a class="active">Dashboard</a>
+      <a>Content Calendar</a>
+      <a>Instagram</a>
+      <a>Automation</a>
+      <a>Settings</a>
+    </nav>
+
+    <div class="side-note">
+      <strong>30 posts / month</strong>
+      <span>AI content + image + publishing</span>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">AI CONTENT ENGINE</p>
+        <h1>Instagram Auto Poster</h1>
+        <p class="sub">Generate branded posts and prepare them for scheduled publishing.</p>
+      </div>
+      <div class="status-pill"><span></span> System ready</div>
+    </header>
+
+    <section class="grid stats">
+      <article class="card stat">
+        <span>Posts generated</span>
+        <strong>{{ posts.length }}</strong>
+        <small>This workspace</small>
+      </article>
+      <article class="card stat">
+        <span>Scheduled</span>
+        <strong>{{ scheduledCount }}</strong>
+        <small>Waiting to publish</small>
+      </article>
+      <article class="card stat">
+        <span>Published</span>
+        <strong>{{ publishedCount }}</strong>
+        <small>Instagram</small>
+      </article>
+      <article class="card stat">
+        <span>Failed</span>
+        <strong>{{ failedCount }}</strong>
+        <small>Needs attention</small>
+      </article>
+    </section>
+
+    <section class="grid main-grid">
+      <article class="card generator">
+        <div class="card-title">
+          <div>
+            <p class="eyebrow">AI GENERATOR</p>
+            <h2>Create a post</h2>
+          </div>
+          <div class="ai-badge">AI</div>
+        </div>
+
+        <label>Topic / campaign</label>
+        <textarea [(ngModel)]="topic" rows="4"
+          placeholder="Example: GST invoice mistakes"></textarea>
+
+        <div class="two">
+          <div>
+            <label>Posts</label>
+            <select [(ngModel)]="count">
+              <option [ngValue]="1">1 post</option>
+              <option [ngValue]="3">3 posts</option>
+              <option [ngValue]="7">7 posts</option>
+              <option [ngValue]="30">30 posts</option>
+            </select>
+          </div>
+          <div>
+            <label>Brand</label>
+            <div class="readonly">AccountancyApp</div>
+          </div>
+        </div>
+
+        <button class="primary" (click)="generate()" [disabled]="loading">
+          {{ loading ? 'Working…' : 'Generate with AI' }}
+        </button>
+
+        @if (message) {
+          <div class="message">{{ message }}</div>
+        }
+      </article>
+
+      <article class="card strategy">
+        <div class="card-title">
+          <div>
+            <p class="eyebrow">BRAND PROFILE</p>
+            <h2>AccountancyApp</h2>
+          </div>
+        </div>
+        <div class="brand-preview">
+          <img src="assets/logo.png" alt="AccountancyApp logo">
+          <div>
+            <strong>Professional accounting</strong>
+            <p>Hindi + English · Simple · Helpful</p>
+          </div>
+        </div>
+        <div class="rules">
+          <div><span>Format</span><strong>1080 × 1080</strong></div>
+          <div><span>Frequency</span><strong>30 / month</strong></div>
+          <div><span>Approval</span><strong>ON initially</strong></div>
+          <div><span>Auto publish</span><strong>OFF initially</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card posts-card">
+      <div class="card-title">
+        <div>
+          <p class="eyebrow">CONTENT QUEUE</p>
+          <h2>Recent posts</h2>
+        </div>
+      </div>
+
+      @if (!posts.length) {
+        <div class="empty">
+          <img src="assets/logo.png" alt="">
+          <h3>No posts yet</h3>
+          <p>Generate your first AI post above.</p>
+        </div>
+      } @else {
+        <div class="post-list">
+          @for (post of posts; track post.id) {
+            <div class="post-row">
+              <img [src]="post.imageUrl || 'assets/logo.png'" alt="">
+              <div class="post-copy">
+                <strong>{{ post.title }}</strong>
+                <p>{{ post.caption }}</p>
+                <div class="chips">
+                  <span>{{ post.status }}</span>
+                  @for (tag of post.hashtags.slice(0, 3); track tag) {
+                    <span>{{ tag }}</span>
+                  }
+                </div>
+              </div>
+              <div class="actions">
+                <button class="secondary" (click)="generateImage(post)"
+                  [disabled]="loading || !post.id">
+                  {{ post.imageUrl ? 'Regenerate image' : 'Generate image' }}
+                </button>
+                <button class="secondary publish" (click)="publish(post)"
+                  [disabled]="loading || post.status === 'published' || !post.imageUrl">
+                  {{ post.status === 'published' ? 'Published' : 'Publish' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </main>
+</div>
