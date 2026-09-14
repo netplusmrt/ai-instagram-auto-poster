@@ -1,0 +1,22 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default function handler(req: VercelRequest, res: VercelResponse) {
+
+  // remove this check if you want to allow access to this endpoint in production
+  return res.status(404).json({ error: 'Not available' });
+
+  const keys = Object.keys(process.env)
+    .filter(key =>
+      key.includes('FIREBASE') ||
+      key.includes('INSTAGRAM') ||
+      key.includes('META') ||
+      key.includes('OPENAI')
+    )
+    .sort();
+
+  return res.status(200).json({
+    nodeVersion: process.version,
+    nodeEnv: process.env.NODE_ENV,
+    matchingEnvironmentKeys: keys
+  });
+}

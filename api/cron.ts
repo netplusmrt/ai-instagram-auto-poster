@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
-import { db } from './lib/firebase-admin';
+import { getDb } from './lib/firebase-admin.js';
 
 async function publishDue(postId: string) {
   // Keep the cron handler small. It calls the same public server endpoint so the
@@ -31,6 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const now = Timestamp.now();
+    const db = getDb();
     const query = db.collection('social_posts')
       .where('status', '==', 'scheduled')
       .where('scheduledAt', '<=', now)

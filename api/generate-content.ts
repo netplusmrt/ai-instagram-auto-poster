@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { FieldValue } from 'firebase-admin/firestore';
-import { db } from './lib/firebase-admin';
-import { openai } from './lib/openai';
+import { getDb } from './lib/firebase-admin.js';
+import { openai } from './lib/openai.js';
 
 const SYSTEM_PROMPT = `
 You are a social media content strategist for AccountancyApp, an Indian accounting
@@ -48,6 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let created = 0;
 
     for (const post of parsed.posts.slice(0, count)) {
+      const db = getDb();
       const ref = db.collection('social_posts').doc();
       await ref.set({
         platform: 'instagram',

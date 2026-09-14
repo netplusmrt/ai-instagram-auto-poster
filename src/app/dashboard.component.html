@@ -132,7 +132,7 @@
           <p>Generate your first AI post above.</p>
         </div>
       } @else {
-        <div class="post-list">
+        <!-- <div class="post-list">
           @for (post of posts; track post.id) {
             <div class="post-row">
               <img [src]="post.imageUrl || 'assets/logo.png'" alt="">
@@ -158,7 +158,56 @@
               </div>
             </div>
           }
-        </div>
+        </div> -->
+        <div class="posts-grid">
+  <div class="post-card" *ngFor="let post of posts">
+
+    <!-- Generated Image -->
+    <div class="post-image" *ngIf="post.imageUrl">
+      <img
+        [src]="post.imageUrl"
+        [alt]="post.title || 'Instagram post image'"
+      />
+    </div>
+
+    <!-- Image placeholder -->
+    <div class="post-image-placeholder" *ngIf="!post.imageUrl">
+      <span>No image generated</span>
+    </div>
+
+    <div class="post-content">
+      <h3>{{ post.title }}</h3>
+
+      <p>{{ post.caption }}</p>
+
+      <div class="hashtags" *ngIf="post.hashtags?.length">
+        {{ post.hashtags.join(' ') }}
+      </div>
+
+      <div class="post-status">
+        Status: {{ post.status }}
+      </div>
+
+      <button
+        type="button"
+        (click)="generateImage(post)"
+        [disabled]="loading || !!post.imageUrl"
+      >
+        {{ post.imageUrl ? 'Image Generated' : 'Generate Image' }}
+      </button>
+
+      <button
+        type="button"
+        *ngIf="post.imageUrl"
+        (click)="publish(post)"
+        [disabled]="loading"
+      >
+        Publish to Instagram
+      </button>
+    </div>
+
+  </div>
+</div>
       }
     </section>
   </main>

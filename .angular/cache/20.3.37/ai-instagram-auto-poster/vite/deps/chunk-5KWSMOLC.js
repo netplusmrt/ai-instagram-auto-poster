@@ -1,14 +1,4 @@
 import {
-  deleteApp,
-  getApp,
-  getApps,
-  initializeApp,
-  initializeServerApp,
-  onLog,
-  registerVersion,
-  setLogLevel
-} from "./chunk-OLAM3ASI.js";
-import {
   EnvironmentInjector,
   Inject,
   Injectable,
@@ -32,6 +22,16 @@ import {
   ɵɵdefineNgModule,
   ɵɵinject
 } from "./chunk-EAZELMHA.js";
+import {
+  deleteApp,
+  getApp,
+  getApps,
+  initializeApp,
+  initializeServerApp,
+  onLog,
+  registerVersion,
+  setLogLevel
+} from "./chunk-OLAM3ASI.js";
 import {
   Observable,
   asyncScheduler,
@@ -371,4 +371,4 @@ export {
   registerVersion2 as registerVersion,
   setLogLevel2 as setLogLevel
 };
-//# sourceMappingURL=chunk-Y3JFPV3G.js.map
+//# sourceMappingURL=chunk-5KWSMOLC.js.map

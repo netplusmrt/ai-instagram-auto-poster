@@ -1,7 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { FieldValue } from 'firebase-admin/firestore';
-import { db, storage } from './lib/firebase-admin';
-import { openai } from './lib/openai';
+import { getDb, getStorage } from './lib/firebase-admin.js';
+import { openai } from './lib/openai.js';
+import sharp from 'sharp';
+import path from 'path';
 
 export default async function handler(
   req: VercelRequest,
@@ -19,6 +21,7 @@ export default async function handler(
     }
 
     // Get post from Firestore
+    const db = getDb();
     const postRef = db.collection('social_posts').doc(postId);
     const postSnap = await postRef.get();
 
@@ -47,10 +50,43 @@ export default async function handler(
       throw new Error('OpenAI did not return an image.');
     }
 
-    // Convert Base64 → Buffer
+    /// Convert Base64 → Buffer
     const imageBuffer = Buffer.from(imageBase64, 'base64');
 
-    // Firebase Storage path
+    // --------------------------------------------------
+    // Add official logo to generated image
+    // --------------------------------------------------
+
+    const logoPath = path.join(
+      process.cwd(),
+      'public',
+      'logo.png'
+    );
+
+    // Resize logo
+    const logoBuffer = await sharp(logoPath)
+      .resize({
+        width: 120,
+        withoutEnlargement: true
+      })
+      .png()
+      .toBuffer();
+
+    // Add logo to bottom-right
+    const brandedImage = await sharp(imageBuffer)
+      .composite([
+        {
+          input: logoBuffer,
+          gravity: 'southeast'
+        }
+      ])
+      .png()
+      .toBuffer();
+
+    // --------------------------------------------------
+    // Upload branded image to Firebase Storage
+    // --------------------------------------------------
+
     const filePath = `social-posts/${postId}.png`;
 
     const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
@@ -59,17 +95,18 @@ export default async function handler(
       throw new Error('FIREBASE_STORAGE_BUCKET is missing at runtime.');
     }
 
+    const storage = getStorage();
     const bucket = storage.bucket(bucketName);
 
     const file = bucket.file(filePath);
 
-    // Upload image
-    await file.save(imageBuffer, {
+    await file.save(brandedImage, {
       metadata: {
         contentType: 'image/png',
         metadata: {
           postId,
-          generatedBy: 'openai'
+          generatedBy: 'openai',
+          branded: 'true'
         }
       }
     });

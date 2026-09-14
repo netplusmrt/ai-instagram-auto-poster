@@ -1,39 +1,54 @@
-import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { cert, getApps, initializeApp, getApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { getStorage } from 'firebase-admin/storage';
+import { getStorage as getAdminStorage } from 'firebase-admin/storage';
+
+function getEnv(name: string): string | undefined {
+  return process.env[name];
+}
 
 function getAdminApp() {
-  if (getApps().length) return getApps()[0];
-
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-  const missing = [];
-
-  if (!process.env.FIREBASE_PROJECT_ID) {
-    missing.push('FIREBASE_PROJECT_ID');
+  if (getApps().length) {
+    return getApp();
   }
 
-  if (!process.env.FIREBASE_CLIENT_EMAIL) {
-    missing.push('FIREBASE_CLIENT_EMAIL');
-  }
+  const projectId = getEnv('FIREBASE_PROJECT_ID');
+  const clientEmail = getEnv('FIREBASE_CLIENT_EMAIL');
+  const privateKey = getEnv('FIREBASE_PRIVATE_KEY')?.replace(/\\n/g, '\n');
+  const storageBucket = getEnv('FIREBASE_STORAGE_BUCKET');
 
-  if (!privateKey) {
-    missing.push('FIREBASE_PRIVATE_KEY');
-  }
+  console.log('Firebase Admin runtime check:', {
+    projectId: !!projectId,
+    clientEmail: !!clientEmail,
+    privateKey: !!privateKey,
+    storageBucket: !!storageBucket
+  });
+
+  const missing: string[] = [];
+
+  if (!projectId) missing.push('FIREBASE_PROJECT_ID');
+  if (!clientEmail) missing.push('FIREBASE_CLIENT_EMAIL');
+  if (!privateKey) missing.push('FIREBASE_PRIVATE_KEY');
 
   if (missing.length > 0) {
-    throw new Error(`Missing Firebase Admin environment variables: ${missing.join(', ')}`);
+    throw new Error(
+      `Missing Firebase Admin environment variables: ${missing.join(', ')}`
+    );
   }
 
   return initializeApp({
     credential: cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      projectId,
+      clientEmail,
       privateKey
     }),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+    storageBucket
   });
 }
 
-export const adminApp = getAdminApp();
-export const db = getFirestore(adminApp);
-export const storage = getStorage(adminApp);
+export function getDb() {
+  return getFirestore(getAdminApp());
+}
+
+export function getStorage() {
+  return getAdminStorage(getAdminApp());
+}

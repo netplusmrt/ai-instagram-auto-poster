@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { FieldValue } from 'firebase-admin/firestore';
-import { db } from './lib/firebase-admin';
-import { required } from './lib/env';
+import { getDb } from './lib/firebase-admin.js';
+import { required } from './lib/env.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -10,7 +10,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const postId = String(req.body?.postId ?? '');
     if (!postId) return res.status(400).json({ error: 'postId is required.' });
 
+    const db = getDb();
     const ref = db.collection('social_posts').doc(postId);
+
     const snap = await ref.get();
     if (!snap.exists) return res.status(404).json({ error: 'Post not found.' });
 

@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { required } from './env';
+import { required } from './env.js';
 
 export const openai = new OpenAI({
   apiKey: required('OPENAI_API_KEY')

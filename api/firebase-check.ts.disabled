@@ -1,0 +1,38 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+function inspect(name: string) {
+  const value = process.env[name];
+
+  if (!value) {
+    return {
+      exists: false,
+      length: 0,
+      value: null
+    };
+  }
+
+  const visible = value.length <= 10
+    ? '***'
+    : `${value.slice(0, 5)}...${value.slice(-5)}`;
+
+  return {
+    exists: true,
+    length: value.length,
+    value: visible
+  };
+}
+
+export default function handler(req: VercelRequest, res: VercelResponse) {
+
+  // remove this check if you want to allow access to this endpoint in production
+  return res.status(404).json({ error: 'Not available' });
+
+  return res.status(200).json({
+    deployment: process.env['VERCEL_DEPLOYMENT_ID'],
+
+    FIREBASE_PROJECT_ID: inspect('FIREBASE_PROJECT_ID'),
+    FIREBASE_CLIENT_EMAIL: inspect('FIREBASE_CLIENT_EMAIL'),
+    FIREBASE_PRIVATE_KEY: inspect('FIREBASE_PRIVATE_KEY'),
+    FIREBASE_STORAGE_BUCKET: inspect('FIREBASE_STORAGE_BUCKET')
+  });
+}

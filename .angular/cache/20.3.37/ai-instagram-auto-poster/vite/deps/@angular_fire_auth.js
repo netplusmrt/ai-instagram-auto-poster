@@ -60,7 +60,11 @@ import {
   validatePassword,
   verifyBeforeUpdateEmail,
   verifyPasswordResetCode
-} from "./chunk-7APDVQ6E.js";
+} from "./chunk-DDDGKR5M.js";
+import "./chunk-QEXSRIOP.js";
+import "./chunk-5KWSMOLC.js";
+import "./chunk-NYOI5KQG.js";
+import "./chunk-EAZELMHA.js";
 import {
   AUTH_ERROR_CODES_MAP_DO_NOT_USE_INTERNALLY,
   ActionCodeOperation,
@@ -95,11 +99,7 @@ import {
   multiFactor,
   prodErrorMap
 } from "./chunk-5KH5AG5B.js";
-import "./chunk-Y3JFPV3G.js";
 import "./chunk-OLAM3ASI.js";
-import "./chunk-QEXSRIOP.js";
-import "./chunk-NYOI5KQG.js";
-import "./chunk-EAZELMHA.js";
 import "./chunk-U5BGXTXY.js";
 import "./chunk-B2KI3AIV.js";
 import "./chunk-5K356HEJ.js";

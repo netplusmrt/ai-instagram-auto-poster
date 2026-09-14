@@ -1,4 +1,25 @@
 import {
+  FirebaseApp,
+  FirebaseApps,
+  VERSION,
+  ɵAngularFireSchedulers,
+  ɵgetAllInstancesOf,
+  ɵgetDefaultInstanceOf,
+  ɵzoneWrap
+} from "./chunk-5KWSMOLC.js";
+import {
+  InjectionToken,
+  Injector,
+  NgModule,
+  NgZone,
+  Optional,
+  PLATFORM_ID,
+  makeEnvironmentProviders,
+  setClassMetadata,
+  ɵɵdefineInjector,
+  ɵɵdefineNgModule
+} from "./chunk-EAZELMHA.js";
+import {
   applyActionCode,
   beforeAuthStateChanged,
   checkActionCode,
@@ -54,15 +75,6 @@ import {
   verifyPasswordResetCode
 } from "./chunk-5KH5AG5B.js";
 import {
-  FirebaseApp,
-  FirebaseApps,
-  VERSION,
-  ɵAngularFireSchedulers,
-  ɵgetAllInstancesOf,
-  ɵgetDefaultInstanceOf,
-  ɵzoneWrap
-} from "./chunk-Y3JFPV3G.js";
-import {
   Component,
   Deferred,
   ErrorFactory,
@@ -76,18 +88,6 @@ import {
   isIndexedDBAvailable,
   registerVersion
 } from "./chunk-OLAM3ASI.js";
-import {
-  InjectionToken,
-  Injector,
-  NgModule,
-  NgZone,
-  Optional,
-  PLATFORM_ID,
-  makeEnvironmentProviders,
-  setClassMetadata,
-  ɵɵdefineInjector,
-  ɵɵdefineNgModule
-} from "./chunk-EAZELMHA.js";
 import {
   Observable,
   concatMap,
@@ -1128,4 +1128,4 @@ export {
   verifyBeforeUpdateEmail2 as verifyBeforeUpdateEmail,
   verifyPasswordResetCode2 as verifyPasswordResetCode
 };
-//# sourceMappingURL=chunk-7APDVQ6E.js.map
+//# sourceMappingURL=chunk-DDDGKR5M.js.map
