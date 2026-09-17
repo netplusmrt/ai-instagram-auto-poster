@@ -7,8 +7,6 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  console.log('PUBLISH INSTAGRAM - IMAGE URL FLOW V2');
-
   if (req.method !== 'POST') {
     return res.status(405).json({
       error: 'Method not allowed'
@@ -37,12 +35,6 @@ export default async function handler(
 
     const post = snap.data()!;
 
-    console.log('Post found:', {
-      postId,
-      hasImageUrl: !!post.imageUrl,
-      status: post.status
-    });
-
     if (!post.imageUrl) {
       return res.status(400).json({
         error: 'Generate the image before publishing.'
@@ -60,8 +52,12 @@ export default async function handler(
       .filter(Boolean)
       .join('\n\n');
 
-    console.log('Creating Instagram media container...');
+    await ref.update({
+      status: 'publishing',
+      updatedAt: FieldValue.serverTimestamp()
+    });
 
+    // Create Instagram media container
     const createUrl =
       `https://graph.facebook.com/${version}/${igUserId}/media`;
 
@@ -79,42 +75,24 @@ export default async function handler(
       body: createParams
     });
 
-    const createBody = await createResponse.text();
-
-    let container: any;
-
-    try {
-      container = JSON.parse(createBody);
-    } catch {
-      throw new Error(
-        `Invalid Instagram create response: ${createBody}`
-      );
-    }
+    const container = await createResponse.json();
 
     if (!createResponse.ok || !container.id) {
       throw new Error(
         container?.error?.message ||
-        `Instagram media container creation failed. HTTP ${createResponse.status}`
+        'Instagram media container creation failed.'
       );
     }
 
-    const creationId = container.id;
-
-    console.log('Instagram creation ID received:', creationId);
-
-    /*
-     * Instagram may need a short amount of time to finish
-     * processing the media container before media_publish.
-     */
+    // Give Instagram time to process the media
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    console.log('Publishing Instagram media container...');
-
+    // Publish Instagram media container
     const publishUrl =
       `https://graph.facebook.com/${version}/${igUserId}/media_publish`;
 
     const publishParams = new URLSearchParams({
-      creation_id: creationId,
+      creation_id: container.id,
       access_token: accessToken
     });
 
@@ -126,25 +104,16 @@ export default async function handler(
       body: publishParams
     });
 
-    const publishBody = await publishResponse.text();
-
-    let published: any;
-
-    try {
-      published = JSON.parse(publishBody);
-    } catch {
-      throw new Error(
-        `Invalid Instagram publish response: ${publishBody}`
-      );
-    }
+    const published = await publishResponse.json();
 
     if (!publishResponse.ok || !published.id) {
       throw new Error(
         published?.error?.message ||
-        `Instagram publish failed. HTTP ${publishResponse.status}`
+        'Instagram publish failed.'
       );
     }
 
+    // Save successful publication
     await ref.update({
       status: 'published',
       instagramMediaId: published.id,
@@ -152,11 +121,6 @@ export default async function handler(
       error: null,
       updatedAt: FieldValue.serverTimestamp()
     });
-
-    console.log(
-      'Instagram publishing successful:',
-      published.id
-    );
 
     return res.status(200).json({
       ok: true,
@@ -171,7 +135,8 @@ export default async function handler(
     );
 
     return res.status(500).json({
-      error: error?.message ??
+      error:
+        error?.message ??
         'Instagram publishing failed.'
     });
   }
