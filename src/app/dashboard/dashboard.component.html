@@ -1,5 +1,24 @@
 <div class="shell">
-  <aside class="sidebar">
+  <button
+    type="button"
+    class="mobile-menu-button"
+    aria-label="Open navigation menu"
+    [attr.aria-expanded]="mobileMenuOpen"
+    (click)="toggleMobileMenu()"
+  >
+    <span aria-hidden="true">☰</span>
+  </button>
+
+  @if (mobileMenuOpen) {
+    <button
+      type="button"
+      class="sidebar-overlay"
+      aria-label="Close navigation menu"
+      (click)="closeMobileMenu()"
+    ></button>
+  }
+
+  <aside class="sidebar" [class.mobile-open]="mobileMenuOpen">
     <div class="brand">
       <img src="assets/logo.png" alt="Brand logo">
       <div>
@@ -9,11 +28,46 @@
     </div>
 
     <nav>
-      <a class="active">Dashboard</a>
-      <a>Content Calendar</a>
-      <a>Instagram</a>
-      <a>Automation</a>
-      <a>Settings</a>
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileMenu()"
+      >
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/content-calendar"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Content Calendar
+      </a>
+
+      <a
+        routerLink="/instagram"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Instagram
+      </a>
+
+      <a
+        routerLink="/automation"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Automation
+      </a>
+
+      <a
+        routerLink="/settings"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Settings
+      </a>
     </nav>
 
     <div class="side-note">

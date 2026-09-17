@@ -92,7 +92,7 @@ textarea:focus, select:focus { border-color:#f47b20; }
 .post-row { display:grid; grid-template-columns:72px 1fr auto; gap:16px; align-items:center; padding:15px 0; border-top:1px solid #edf0f4; }
 .post-row > img { width:72px; height:72px; border-radius:10px; object-fit:cover; background:#f4f5f7; }
 .post-copy strong { font-size:13px; }
-.post-copy p { margin:5px 0 8px; color:#737e93; font-size:11px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.post-copy p { margin:5px 0 8px; color:#737e93; font-size:11px; display:-webkit-box; line-clamp:2; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .chips { display:flex; gap:6px; flex-wrap:wrap; }
 .chips span { background:#f3f5f8; padding:4px 7px; border-radius:6px; font-size:9px; color:#667187; }
 .secondary { border:1px solid #dce2ea; background:#fff; color:#26334c; padding:9px 12px; border-radius:9px; font-weight:700; font-size:11px; cursor:pointer; }
@@ -185,10 +185,23 @@ textarea:focus, select:focus { border-color:#f47b20; }
 
 .mobile-menu-button {
   display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #dce2ea;
+  border-radius: 10px;
+  background: #fff;
+  color: #172033;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .sidebar-overlay {
   display: none;
+  border: 0;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
@@ -224,6 +237,45 @@ textarea:focus, select:focus { border-color:#f47b20; }
     inset: 0;
     z-index: 2050;
     background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+  }
+
+  .content {
+    width: 100%;
+    margin-left: 0;
+    padding: 76px 16px 32px;
+  }
+
+  .topbar {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+
+  .status-pill {
+    align-self: stretch;
+  }
+
+  .stats,
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .generator,
+  .strategy,
+  .posts-card {
+    padding: 18px;
+  }
+
+  .two {
+    grid-template-columns: 1fr;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
 
