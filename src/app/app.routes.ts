@@ -6,46 +6,64 @@ import { ContentCalendarComponent } from './content-calendar/content-calendar.co
 import { InstagramComponent } from './instagram/instagram.component';
 import { AutomationComponent } from './automation/automation.component';
 import { SettingsComponent } from './settings/settings.component';
-import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 
+import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
 import { authGuard } from './services/auth-guard';
 
 export const routes: Routes = [
+
+  // Default route
   {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
   },
 
+  // Login
   {
     path: 'login',
     component: LoginComponent
   },
 
+  // Protected application
   {
     path: '',
+    component: AppLayoutComponent,
+    canActivate: [authGuard],
     children: [
+
       {
         path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [authGuard]
+        component: DashboardComponent
       },
+
       {
-        path: '',
-        component: AppLayoutComponent,
-        canActivate: [authGuard],
-        children: [
-      { path: 'content-calendar', component: ContentCalendarComponent },
-      { path: 'instagram', component: InstagramComponent },
-      { path: 'automation', component: AutomationComponent },
-      { path: 'settings', component: SettingsComponent }
-        ]
+        path: 'content-calendar',
+        component: ContentCalendarComponent
+      },
+
+      {
+        path: 'instagram',
+        component: InstagramComponent
+      },
+
+      {
+        path: 'automation',
+        component: AutomationComponent
+      },
+
+      {
+        path: 'settings',
+        component: SettingsComponent
       }
+
     ]
   },
 
+  // Unknown routes
   {
     path: '**',
     redirectTo: 'dashboard'
   }
+
 ];

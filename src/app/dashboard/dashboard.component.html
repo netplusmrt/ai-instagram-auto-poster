@@ -230,35 +230,120 @@
     </div>
 
     <div class="post-content">
-      <h3>{{ post.title }}</h3>
 
-      <p>{{ post.caption }}</p>
+  <h3>{{ post.title }}</h3>
 
-      <div class="hashtags" *ngIf="post.hashtags?.length">
-        {{ post.hashtags.join(' ') }}
-      </div>
+  <p>{{ post.caption }}</p>
 
-      <div class="post-status">
-        Status: {{ post.status }}
-      </div>
+  <div
+    class="hashtags"
+    *ngIf="post.hashtags?.length"
+  >
+    {{ post.hashtags.join(' ') }}
+  </div>
 
-      <button
-        type="button"
-        (click)="generateImage(post)"
-        [disabled]="loading || !!post.imageUrl"
-      >
-        {{ post.imageUrl ? 'Image Generated' : 'Generate Image' }}
-      </button>
+  <div class="post-status">
+    Status: {{ post.status }}
+  </div>
 
-      <button
-        type="button"
-        *ngIf="post.imageUrl"
-        (click)="publish(post)"
-        [disabled]="loading"
-      >
-        Publish to Instagram
-      </button>
-    </div>
+
+  <!-- Generate Image -->
+
+  <button
+    type="button"
+    (click)="generateImage(post)"
+    [disabled]="loading || !!post.imageUrl"
+  >
+    {{ post.imageUrl ? 'Image Generated' : 'Generate Image' }}
+  </button>
+
+
+  <!-- Scheduling -->
+
+  <div
+    class="schedule-section"
+    *ngIf="
+      post.imageUrl &&
+      post.status !== 'published'
+    "
+  >
+
+    <label [for]="'schedule-' + post.id">
+      Schedule date & time
+    </label>
+
+    <input
+      [id]="'schedule-' + post.id"
+      type="datetime-local"
+      [(ngModel)]="post.scheduledAt"
+      [disabled]="
+        loading ||
+        post.status === 'scheduled'
+      "
+    >
+
+
+    <button
+      type="button"
+      *ngIf="post.status !== 'scheduled'"
+      (click)="schedulePost(post)"
+      [disabled]="
+        loading ||
+        !post.scheduledAt
+      "
+    >
+      Schedule Post
+    </button>
+
+
+    <button
+      type="button"
+      *ngIf="post.status === 'scheduled'"
+      (click)="cancelSchedule(post)"
+      [disabled]="loading"
+    >
+      Cancel Schedule
+    </button>
+
+  </div>
+
+
+  <!-- Manual Publish -->
+
+  <button
+    type="button"
+    *ngIf="
+      post.imageUrl &&
+      post.status !== 'published' &&
+      post.status !== 'scheduled'
+    "
+    (click)="publish(post)"
+    [disabled]="loading"
+  >
+    Publish to Instagram
+  </button>
+
+
+  <!-- Published -->
+
+  <div
+    *ngIf="post.status === 'published'"
+    class="published-label"
+  >
+    ✓ Published to Instagram
+  </div>
+
+
+  <!-- Scheduled -->
+
+  <div
+    *ngIf="post.status === 'scheduled'"
+    class="scheduled-label"
+  >
+    ✓ Scheduled for publishing
+  </div>
+
+</div>
 
   </div>
 </div>

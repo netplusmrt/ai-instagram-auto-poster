@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, EnvironmentInjector, runInInjectionContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -9,11 +9,13 @@ import {
   orderBy,
   query,
   doc,
-  updateDoc
+  updateDoc,
+  Timestamp
 } from '@angular/fire/firestore';
 
 import { ApiService } from '../services/api.service';
 import { SocialPost } from '../models';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -30,6 +32,7 @@ import { SocialPost } from '../models';
 export class DashboardComponent {
   private readonly api = inject(ApiService);
   private readonly firestore = inject(Firestore);
+  private readonly environmentInjector = inject(EnvironmentInjector);
 
   topic = 'GST and accounting tips for Indian small businesses';
   count = 1;
@@ -128,56 +131,65 @@ export class DashboardComponent {
   }
 
   async schedulePost(post: SocialPost) {
-    if (!post.id) return;
+  if (!post.id) return;
 
-    if (!post.scheduledAt) {
-      this.message = 'Please select a date and time.';
-      return;
-    }
-
-    if (!post.imageUrl) {
-      this.message = 'Generate the image before scheduling.';
-      return;
-    }
-
-    const scheduledDate = new Date(post.scheduledAt);
-
-    if (isNaN(scheduledDate.getTime())) {
-      this.message = 'Invalid schedule date and time.';
-      return;
-    }
-
-    if (scheduledDate.getTime() <= Date.now()) {
-      this.message = 'Please select a future date and time.';
-      return;
-    }
-
-    this.loading = true;
-    this.message = '';
-
-    try {
-      const postRef = doc(
-        this.firestore,
-        'social_posts',
-        post.id
-      );
-
-      await updateDoc(postRef, {
-        status: 'scheduled',
-        scheduledAt: scheduledDate,
-        updatedAt: new Date()
-      });
-
-      this.message = 'Post scheduled successfully.';
-    } catch (error: any) {
-      console.error(error);
-
-      this.message =
-        error?.message ?? 'Scheduling failed.';
-    } finally {
-      this.loading = false;
-    }
+  if (!post.scheduledAt) {
+    this.message = 'Please select a date and time.';
+    return;
   }
+
+  if (!post.imageUrl) {
+    this.message = 'Generate the image before scheduling.';
+    return;
+  }
+
+  const scheduledDate = new Date(post.scheduledAt);
+
+  if (isNaN(scheduledDate.getTime())) {
+    this.message = 'Invalid schedule date and time.';
+    return;
+  }
+
+  if (scheduledDate.getTime() <= Date.now()) {
+    this.message = 'Please select a future date and time.';
+    return;
+  }
+
+  this.loading = true;
+  this.message = '';
+
+  try {
+    const postRef = doc(
+      this.firestore,
+      'social_posts',
+      post.id
+    );
+
+    await runInInjectionContext(
+      this.environmentInjector,
+      () =>
+        updateDoc(postRef, {
+          status: 'scheduled',
+          scheduledAt: Timestamp.fromDate(scheduledDate),
+          updatedAt: Timestamp.now()
+        })
+    );
+
+    // Keep the UI value compatible with datetime-local
+    post.status = 'scheduled';
+
+    this.message = 'Post scheduled successfully.';
+
+  } catch (error: any) {
+    console.error('Schedule post error:', error);
+
+    this.message =
+      error?.message ?? 'Scheduling failed.';
+
+  } finally {
+    this.loading = false;
+  }
+}
 
   async cancelSchedule(post: SocialPost) {
     if (!post.id) return;

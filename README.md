@@ -431,6 +431,12 @@ The Cron endpoint is:
 /api/cron
 ```
 
+Test the production Cron endpoint:
+
+```cmd
+curl -X GET https://ai-instagram-auto-poster.vercel.app/api/cron
+```
+
 ## Logo Branding
 
 The Accountancy App logo is available in:
