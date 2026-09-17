@@ -1,0 +1,98 @@
+<div class="calendar-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Content Calendar</h1>
+      <p>Manage your scheduled Instagram posts.</p>
+    </div>
+
+    <div class="scheduled-count">
+      <strong>{{ posts.length }}</strong>
+      <span>Scheduled Posts</span>
+    </div>
+  </div>
+
+  <div *ngIf="message" class="message">
+    {{ message }}
+  </div>
+
+  <div *ngIf="posts.length === 0" class="empty-state">
+    <div class="empty-icon">📅</div>
+    <h2>No scheduled posts</h2>
+    <p>
+      Posts that you schedule from the Dashboard will appear here.
+    </p>
+  </div>
+
+  <div class="calendar-grid" *ngIf="posts.length > 0">
+
+    <div class="calendar-card" *ngFor="let post of posts">
+
+      <div class="post-image" *ngIf="post.imageUrl">
+        <img
+          [src]="post.imageUrl"
+          [alt]="post.title"
+        />
+      </div>
+
+      <div class="post-content">
+
+        <div class="status">
+          <span class="status-dot"></span>
+          Scheduled
+        </div>
+
+        <h2>{{ post.title }}</h2>
+
+        <p class="topic">
+          {{ post.topic }}
+        </p>
+
+        <div class="schedule-time">
+          <span class="calendar-icon">📅</span>
+
+          <div>
+            <small>Scheduled for</small>
+
+            <strong *ngIf="getScheduledDate(post) as date">
+              {{ date | date:'EEE, dd MMM yyyy' }}
+              <br />
+              {{ date | date:'hh:mm a' }}
+            </strong>
+
+            <strong *ngIf="!getScheduledDate(post)">
+              Date unavailable
+            </strong>
+          </div>
+        </div>
+
+        <div class="caption">
+          {{ post.caption }}
+        </div>
+
+        <div class="hashtags" *ngIf="post.hashtags?.length">
+          <span *ngFor="let hashtag of post.hashtags">
+            {{ hashtag }}
+          </span>
+        </div>
+
+        <div class="actions">
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="cancelSchedule(post)"
+            [disabled]="loading"
+          >
+            Cancel Schedule
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,206 @@
+.instagram-page {
+  padding: 30px;
+  min-height: calc(100vh - 60px);
+  background: #f5f7fb;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #0b1f3a;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #667085;
+}
+
+.connection-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 20px;
+  background: #e9f8ef;
+  color: #16834b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #20a464;
+}
+
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.account-card {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.instagram-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b1f3a;
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: 300;
+}
+
+.account-info {
+  flex: 1;
+}
+
+.account-info .label {
+  display: block;
+  color: #667085;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.account-info h2 {
+  margin: 0;
+  color: #0b1f3a;
+  font-size: 22px;
+}
+
+.account-type {
+  display: inline-block;
+  margin-top: 5px;
+  color: #667085;
+  font-size: 12px;
+}
+
+.connected-label {
+  color: #16834b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #0b1f3a;
+  font-size: 19px;
+}
+
+.badge {
+  background: #fff1e6;
+  color: #d85b00;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  padding: 18px 10px;
+  text-align: center;
+  background: #f5f7fb;
+  border-radius: 10px;
+}
+
+.stat strong {
+  display: block;
+  color: #0b1f3a;
+  font-size: 25px;
+  margin-bottom: 4px;
+}
+
+.stat span {
+  color: #667085;
+  font-size: 12px;
+}
+
+.description {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.automation-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid #eaecf0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.automation-row strong {
+  color: #0b1f3a;
+}
+
+@media (max-width: 800px) {
+  .instagram-page {
+    padding: 18px;
+  }
+
+  .instagram-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-card {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 550px) {
+  .page-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .account-card {
+    align-items: flex-start;
+  }
+
+  .connected-label {
+    display: none;
+  }
+}

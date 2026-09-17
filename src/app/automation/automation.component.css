@@ -1,0 +1,246 @@
+.automation-page {
+  padding: 30px;
+  min-height: calc(100vh - 60px);
+  background: #f5f7fb;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #0b1f3a;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #667085;
+}
+
+.automation-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 20px;
+  background: #e9f8ef;
+  color: #16834b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #20a464;
+}
+
+.automation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.workflow-card {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.card-header h2 {
+  margin: 4px 0 0;
+  color: #0b1f3a;
+  font-size: 19px;
+}
+
+.eyebrow {
+  color: #d85b00;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.active-badge {
+  background: #fff1e6;
+  color: #d85b00;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.description {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid #eaecf0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.status-row strong {
+  color: #0b1f3a;
+}
+
+.schedule-display {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #f4f7fc;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.schedule-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff1e6;
+  border-radius: 12px;
+  font-size: 23px;
+}
+
+.schedule-display span,
+.schedule-display strong,
+.schedule-display small {
+  display: block;
+}
+
+.schedule-display span {
+  color: #667085;
+  font-size: 12px;
+}
+
+.schedule-display strong {
+  margin: 2px 0;
+  color: #0b1f3a;
+  font-size: 22px;
+}
+
+.schedule-display small {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.workflow {
+  display: flex;
+  align-items: center;
+}
+
+.workflow-step {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.step-number {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #0b1f3a;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.workflow-step strong {
+  display: block;
+  color: #0b1f3a;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.workflow-step p {
+  margin: 0;
+  color: #667085;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.workflow-line {
+  flex: 0 0 35px;
+  height: 1px;
+  background: #d0d5dd;
+  margin: 0 8px;
+}
+
+@media (max-width: 900px) {
+  .automation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-card {
+    grid-column: auto;
+  }
+
+  .workflow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .workflow-line {
+    width: 1px;
+    height: 20px;
+    margin-left: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .automation-page {
+    padding: 18px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .automation-status {
+    font-size: 11px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}

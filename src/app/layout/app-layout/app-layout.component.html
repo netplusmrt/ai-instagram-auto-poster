@@ -1,0 +1,95 @@
+<button
+  type="button"
+  class="mobile-menu-button"
+  (click)="toggleMobileMenu()"
+  aria-label="Open navigation"
+>
+  ☰
+</button>
+
+<div
+  class="sidebar-overlay"
+  *ngIf="mobileMenuOpen"
+  (click)="closeMobileMenu()"
+></div>
+
+<div class="app-shell">
+
+  <aside
+    class="sidebar"
+    [class.mobile-open]="mobileMenuOpen"
+  >
+
+    <div class="brand">
+      <img src="assets/logo.png" alt="AccountancyApp logo">
+
+      <div>
+        <strong>AI Social</strong>
+        <span>Instagram Manager</span>
+      </div>
+    </div>
+
+    <nav>
+
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileMenu()"
+      >
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/content-calendar"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Content Calendar
+      </a>
+
+      <a
+        routerLink="/instagram"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Instagram
+      </a>
+
+      <a
+        routerLink="/automation"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Automation
+      </a>
+
+      <a
+        routerLink="/settings"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        Settings
+      </a>
+
+    </nav>
+
+    <div class="side-note">
+      <strong>30 posts / month</strong>
+      <span>AI content + image + publishing</span>
+    </div>
+
+  </aside>
+
+  <main class="app-content">
+
+    <div class="mobile-page-title">
+      <span>AI Social</span>
+      <strong>Instagram Manager</strong>
+    </div>
+
+    <router-outlet></router-outlet>
+
+  </main>
+
+</div>

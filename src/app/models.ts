@@ -18,7 +18,7 @@ export interface SocialPost {
   imageUrl: string;
   imagePrompt: string;
   status: PostStatus;
-  scheduledAt: string | null;
+  scheduledAt: Date | null;
   publishedAt: string | null;
   instagramMediaId?: string | null;
   retryCount?: number;
