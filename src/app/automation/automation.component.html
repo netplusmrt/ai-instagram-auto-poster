@@ -1,143 +1,345 @@
 <div class="automation-page">
 
   <div class="page-header">
+
     <div>
+      <span class="eyebrow">AUTOMATION ENGINE</span>
+
       <h1>Automation</h1>
-      <p>Control and monitor your automatic Instagram publishing.</p>
+
+      <p>
+        Automatically create, schedule and publish Instagram posts.
+      </p>
     </div>
 
-    <div class="automation-status">
+    <div
+      class="automation-status"
+      [class.disabled]="!automationEnabled"
+    >
       <span class="status-dot"></span>
-      Automation Active
+
+      {{ automationEnabled ? 'Automation Active' : 'Automation Disabled' }}
     </div>
+
   </div>
+
+
+  <!-- Automation master switch -->
+
+  <section class="card automation-control">
+
+    <div class="card-header">
+
+      <div>
+        <span class="eyebrow">SYSTEM CONTROL</span>
+
+        <h2>Automatic Publishing</h2>
+
+        <p class="description">
+          When enabled, the automation engine can generate content,
+          create images, schedule posts and publish them automatically.
+        </p>
+      </div>
+
+      <label class="switch">
+
+        <input
+          type="checkbox"
+          [(ngModel)]="automationEnabled"
+        >
+
+        <span class="slider"></span>
+
+      </label>
+
+    </div>
+
+  </section>
+
 
   <div class="automation-grid">
 
-    <!-- Status -->
-    <section class="card status-card">
 
-      <div class="card-header">
-        <div>
-          <span class="eyebrow">SYSTEM STATUS</span>
-          <h2>Automatic Publishing</h2>
-        </div>
+    <!-- Posting schedule -->
 
-        <span class="active-badge">Enabled</span>
-      </div>
-
-      <p class="description">
-        Your scheduled Instagram posts are automatically processed
-        by the Vercel Cron automation.
-      </p>
-
-      <div class="status-row">
-        <span>Automation</span>
-        <strong>Enabled</strong>
-      </div>
-
-      <div class="status-row">
-        <span>Platform</span>
-        <strong>Instagram</strong>
-      </div>
-
-      <div class="status-row">
-        <span>Account</span>
-        <strong>@accountancyapp</strong>
-      </div>
-
-    </section>
-
-    <!-- Schedule -->
     <section class="card">
 
       <div class="card-header">
-        <div>
-          <span class="eyebrow">CRON SCHEDULE</span>
-          <h2>Publishing Schedule</h2>
-        </div>
-      </div>
-
-      <div class="schedule-display">
-
-        <div class="schedule-icon">
-          ⏰
-        </div>
 
         <div>
-          <span>Every day</span>
-          <strong>2:30 PM IST</strong>
-          <small>09:00 UTC</small>
+
+          <span class="eyebrow">
+            CONTENT SCHEDULE
+          </span>
+
+          <h2>Posting Schedule</h2>
+
         </div>
 
       </div>
 
-      <div class="status-row">
+
+      <label>
+        Posts per week
+      </label>
+
+      <select
+        [(ngModel)]="postsPerWeek"
+      >
+
+        <option [ngValue]="1">
+          1 post per week
+        </option>
+
+        <option [ngValue]="2">
+          2 posts per week
+        </option>
+
+        <option [ngValue]="3">
+          3 posts per week
+        </option>
+
+        <option [ngValue]="4">
+          4 posts per week
+        </option>
+
+        <option [ngValue]="5">
+          5 posts per week
+        </option>
+
+        <option [ngValue]="6">
+          6 posts per week
+        </option>
+
+        <option [ngValue]="7">
+          7 posts per week
+        </option>
+
+      </select>
+
+
+      <label>
+        Posting time
+      </label>
+
+      <input
+        type="time"
+        [(ngModel)]="postingTime"
+      >
+
+
+      <label>
+        Posting days
+      </label>
+
+      <div class="days-grid">
+
+        @for (day of days; track day.key) {
+
+          <button
+            type="button"
+            class="day-button"
+            [class.selected]="isDaySelected(day.key)"
+            (click)="toggleDay(day.key)"
+          >
+
+            {{ day.label }}
+
+          </button>
+
+        }
+
+      </div>
+
+
+      <div class="timezone">
+
         <span>Timezone</span>
-        <strong>Asia/Kolkata</strong>
-      </div>
 
-      <div class="status-row">
-        <span>Frequency</span>
-        <strong>Daily</strong>
+        <strong>Asia/Kolkata (IST)</strong>
+
       </div>
 
     </section>
 
-    <!-- Workflow -->
-    <section class="card workflow-card">
+
+    <!-- Automation workflow -->
+
+    <section class="card">
 
       <div class="card-header">
+
         <div>
-          <span class="eyebrow">WORKFLOW</span>
-          <h2>How Automation Works</h2>
+
+          <span class="eyebrow">
+            AUTOMATION WORKFLOW
+          </span>
+
+          <h2>Automatic Actions</h2>
+
         </div>
+
       </div>
 
-      <div class="workflow">
 
-        <div class="workflow-step">
-          <span class="step-number">1</span>
-          <div>
-            <strong>Create Content</strong>
-            <p>Generate your post and AI image from the Dashboard.</p>
-          </div>
+      <div class="automation-option">
+
+        <div>
+
+          <strong>
+            Generate content
+          </strong>
+
+          <p>
+            Automatically create the post caption and hashtags.
+          </p>
+
         </div>
 
-        <div class="workflow-line"></div>
+        <label class="switch">
 
-        <div class="workflow-step">
-          <span class="step-number">2</span>
-          <div>
-            <strong>Schedule Post</strong>
-            <p>Select a future date and time in the Content Calendar.</p>
-          </div>
+          <input
+            type="checkbox"
+            [(ngModel)]="autoGenerateContent"
+          >
+
+          <span class="slider"></span>
+
+        </label>
+
+      </div>
+
+
+      <div class="automation-option">
+
+        <div>
+
+          <strong>
+            Generate image
+          </strong>
+
+          <p>
+            Automatically generate the AccountancyApp promotional image.
+          </p>
+
         </div>
 
-        <div class="workflow-line"></div>
+        <label class="switch">
 
-        <div class="workflow-step">
-          <span class="step-number">3</span>
-          <div>
-            <strong>Automatic Processing</strong>
-            <p>Vercel Cron checks for posts that are due.</p>
-          </div>
+          <input
+            type="checkbox"
+            [(ngModel)]="autoGenerateImage"
+          >
+
+          <span class="slider"></span>
+
+        </label>
+
+      </div>
+
+
+      <div class="automation-option">
+
+        <div>
+
+          <strong>
+            Schedule post
+          </strong>
+
+          <p>
+            Automatically create the Firestore scheduled post.
+          </p>
+
         </div>
 
-        <div class="workflow-line"></div>
+        <label class="switch">
 
-        <div class="workflow-step">
-          <span class="step-number">4</span>
-          <div>
-            <strong>Publish to Instagram</strong>
-            <p>The scheduled post is automatically published.</p>
-          </div>
+          <input
+            type="checkbox"
+            [(ngModel)]="autoSchedule"
+          >
+
+          <span class="slider"></span>
+
+        </label>
+
+      </div>
+
+
+      <div class="automation-option">
+
+        <div>
+
+          <strong>
+            Publish to Instagram
+          </strong>
+
+          <p>
+            Automatically publish posts when their scheduled time arrives.
+          </p>
+
         </div>
+
+        <label class="switch">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="autoPublish"
+          >
+
+          <span class="slider"></span>
+
+        </label>
 
       </div>
 
     </section>
 
   </div>
+
+
+  <!-- Save -->
+
+  <section class="card save-card">
+
+    <div>
+
+      <span class="eyebrow">
+        CONFIGURATION
+      </span>
+
+      <h2>Save Automation Settings</h2>
+
+      <p>
+        These settings control how the automation engine creates and
+        schedules future Instagram posts.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="primary"
+      (click)="saveSettings()"
+      [disabled]="loading"
+    >
+
+      {{ loading ? 'Saving…' : 'Save Automation Settings' }}
+
+    </button>
+
+  </section>
+
+
+  @if (message) {
+
+    <div class="message">
+
+      {{ message }}
+
+    </div>
+
+  }
 
 </div>

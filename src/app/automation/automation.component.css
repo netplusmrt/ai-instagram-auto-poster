@@ -244,3 +244,38 @@
     padding: 18px;
   }
 }
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.day-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  padding: 10px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.day-button:hover {
+  border-color: #ff8a00;
+  background: rgba(255, 138, 0, 0.08);
+}
+
+.day-button.selected {
+  background: #ff8a00;
+  border-color: #ff8a00;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(255, 138, 0, 0.15);
+}
+
+.day-button.selected:hover {
+  background: #ff9800;
+}
