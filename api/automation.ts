@@ -4,32 +4,7 @@ import { getDb, getStorage } from './lib/firebase-admin.js';
 import { openai } from './lib/openai.js';
 import sharp from 'sharp';
 import path from 'path';
-
-const SYSTEM_PROMPT = `
-You are a social media content strategist for AccountancyApp, an Indian accounting
-software/business brand.
-
-Create concise, useful Instagram content for Indian small business owners.
-
-Use simple Hinglish/English.
-
-Avoid invented statistics, legal claims, prices, guarantees, or unsupported claims.
-
-Return strict JSON only:
-
-{
-  "title": "...",
-  "caption": "...",
-  "cta": "...",
-  "hashtags": ["#...", "#..."],
-  "imagePrompt": "..."
-}
-
-The image prompt must describe a professional 1080x1080 Instagram visual,
-leave clean space for headline overlay, and use navy + orange brand styling.
-
-Do not ask questions.
-`;
+import { SOCIAL_MEDIA_SYSTEM_PROMPT } from './prompts/social-media-system-prompt.js';
 
 const DAY_INDEX: Record<string, number> = {
   sunday: 0,
@@ -267,7 +242,7 @@ async function generateContent() {
 
         {
           role: 'system',
-          content: SYSTEM_PROMPT
+          content: SOCIAL_MEDIA_SYSTEM_PROMPT
         },
 
         {

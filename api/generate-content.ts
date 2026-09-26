@@ -2,27 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { FieldValue } from 'firebase-admin/firestore';
 import { getDb } from './lib/firebase-admin.js';
 import { openai } from './lib/openai.js';
-
-const SYSTEM_PROMPT = `
-You are a social media content strategist for AccountancyApp, an Indian accounting
-software/business brand. Create concise, useful Instagram content for Indian small
-business owners. Use simple Hinglish/English. Avoid invented statistics, legal claims,
-prices, or guarantees. Return strict JSON only:
-{
-  "posts": [
-    {
-      "title": "...",
-      "caption": "...",
-      "cta": "...",
-      "hashtags": ["#...", "#..."],
-      "imagePrompt": "..."
-    }
-  ]
-}
-The image prompt must describe a professional 1080x1080 Instagram visual, leave clean
-space for headline overlay, and use navy + orange brand styling. Do not ask the user
-questions.
-`;
+import { SOCIAL_MEDIA_SYSTEM_PROMPT } from './prompts/social-media-system-prompt.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -37,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       model: process.env.OPENAI_TEXT_MODEL || 'gpt-5-mini',
       response_format: { type: 'json_object' },
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: SOCIAL_MEDIA_SYSTEM_PROMPT },
         { role: 'user', content: `Create ${count} distinct Instagram post ideas around: ${topic}` }
       ]
     });

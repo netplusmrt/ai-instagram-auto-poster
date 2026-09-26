@@ -272,9 +272,6 @@ export default async function handler(
             error?.message ??
             'Instagram publishing failed.',
 
-          retryCount:
-            FieldValue.increment(1),
-
           updatedAt:
             FieldValue.serverTimestamp()
         });
