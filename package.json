@@ -7,6 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:vercel": "ng build --configuration production",
+    "deploy": "vercel --prod",
     "dev": "ng serve",
     "lint": "ng lint"
   },
