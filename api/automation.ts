@@ -27,8 +27,8 @@ function getNextSchedule(settings: any): Date {
   const postingDays: string[] =
     Array.isArray(settings.postingDays)
       ? settings.postingDays.map((day: string) =>
-          String(day).toLowerCase()
-        )
+        String(day).toLowerCase()
+      )
       : [];
 
   if (!postingDays.length) {
@@ -207,25 +207,27 @@ async function hasScheduledPost(
 /**
  * Generate one AccountancyApp post.
  */
+/**
+ * Generate one AccountancyApp post.
+ */
 async function generateContent() {
 
-  const topic =
-    `
-    AccountancyApp promotional and educational content
-    for Indian small businesses.
+  const topic = `
+AccountancyApp promotional and educational content
+for Indian small businesses.
 
-    Cover useful topics such as:
-    - Billing
-    - Invoicing
-    - GST
-    - Inventory
-    - Customer management
-    - Business reports
-    - Accounting
-    - Business productivity
+Cover useful topics such as:
+- Billing
+- Invoicing
+- GST
+- Inventory
+- Customer management
+- Business reports
+- Accounting
+- Business productivity
 
-    Create a fresh concept that is different from previous posts.
-    `;
+Create a fresh concept that is different from previous posts.
+`;
 
   const completion =
     await openai.chat.completions.create({
@@ -262,22 +264,61 @@ ${topic}`
       ?.message
       ?.content ?? '{}';
 
-  const parsed =
-    JSON.parse(raw);
+  console.log(
+    'AI automation response:',
+    raw
+  );
 
-  if (!parsed.title) {
+  let parsed: any;
+
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error(
+      'AI returned invalid JSON.'
+    );
+  }
+
+  /*
+   * The system prompt returns:
+   *
+   * {
+   *   "posts": [
+   *     {
+   *       "title": "...",
+   *       "caption": "...",
+   *       "cta": "...",
+   *       "hashtags": [],
+   *       "imagePrompt": "..."
+   *     }
+   *   ]
+   * }
+   */
+
+  const post =
+    Array.isArray(parsed?.posts)
+      ? parsed.posts[0]
+      : null;
+
+  if (!post) {
+    throw new Error(
+      'AI did not return a post in the expected posts array.'
+    );
+  }
+
+  if (!post.title) {
     throw new Error(
       'AI did not return a post title.'
     );
   }
 
-  if (!parsed.caption) {
+  if (!post.caption) {
     throw new Error(
       'AI did not return a caption.'
     );
   }
 
-  if (!parsed.imagePrompt) {
+  if (!post.imagePrompt) {
     throw new Error(
       'AI did not return an image prompt.'
     );
@@ -286,26 +327,26 @@ ${topic}`
   return {
 
     title:
-      String(parsed.title),
+      String(post.title),
 
     caption:
       [
-        String(parsed.caption),
+        String(post.caption),
 
-        parsed.cta
-          ? String(parsed.cta)
+        post.cta
+          ? String(post.cta)
           : ''
       ]
         .filter(Boolean)
         .join('\n\n'),
 
     hashtags:
-      Array.isArray(parsed.hashtags)
-        ? parsed.hashtags.map(String)
+      Array.isArray(post.hashtags)
+        ? post.hashtags.map(String)
         : [],
 
     imagePrompt:
-      String(parsed.imagePrompt)
+      String(post.imagePrompt)
 
   };
 }
@@ -471,7 +512,7 @@ export default async function handler(
     if (
       cronSecret &&
       req.headers.authorization !==
-        `Bearer ${cronSecret}`
+      `Bearer ${cronSecret}`
     ) {
 
       return res.status(401).json({
